@@ -31,6 +31,9 @@ const GraphsSection = ({ range }: GraphsSectionProps) => {
     canvas.width = canvasWidth;
     canvas.height = canvasHeight;
 
+    // 將原點移動到矩形的正中央
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+
     // 簡化的繪製網格線函數
     const drawGrid = () => {
       ctx.strokeStyle = "red";
@@ -38,14 +41,14 @@ const GraphsSection = ({ range }: GraphsSectionProps) => {
 
       // 垂直中心線
       ctx.beginPath();
-      ctx.moveTo(canvas.width / 2, 0);
-      ctx.lineTo(canvas.width / 2, canvas.height);
+      ctx.moveTo(0, -canvas.height / 2);
+      ctx.lineTo(0, canvas.height / 2);
       ctx.stroke();
 
       // 水平中心線
       ctx.beginPath();
-      ctx.moveTo(0, canvas.height / 2);
-      ctx.lineTo(canvas.width, canvas.height / 2);
+      ctx.moveTo(-canvas.width / 2, 0);
+      ctx.lineTo(canvas.width / 2, 0);
       ctx.stroke();
 
       // 繪製垂直線和水平線
@@ -55,24 +58,24 @@ const GraphsSection = ({ range }: GraphsSectionProps) => {
       for (let i = 1; i <= maxSegments; i++) {
         // 垂直線
         ctx.beginPath();
-        ctx.moveTo(canvas.width / 2 + i * segmentSize, 0);
-        ctx.lineTo(canvas.width / 2 + i * segmentSize, canvas.height);
+        ctx.moveTo(i * segmentSize, -canvas.height / 2);
+        ctx.lineTo(i * segmentSize, canvas.height / 2);
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.moveTo(canvas.width / 2 - i * segmentSize, 0);
-        ctx.lineTo(canvas.width / 2 - i * segmentSize, canvas.height);
+        ctx.moveTo(-i * segmentSize, -canvas.height / 2);
+        ctx.lineTo(-i * segmentSize, canvas.height / 2);
         ctx.stroke();
 
         // 水平線
         ctx.beginPath();
-        ctx.moveTo(0, canvas.height / 2 + i * segmentSize);
-        ctx.lineTo(canvas.width, canvas.height / 2 + i * segmentSize);
+        ctx.moveTo(-canvas.width / 2, i * segmentSize);
+        ctx.lineTo(canvas.width / 2, i * segmentSize);
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.moveTo(0, canvas.height / 2 - i * segmentSize);
-        ctx.lineTo(canvas.width, canvas.height / 2 - i * segmentSize);
+        ctx.moveTo(-canvas.width / 2, -i * segmentSize);
+        ctx.lineTo(canvas.width / 2, -i * segmentSize);
         ctx.stroke();
       }
     };
@@ -85,8 +88,8 @@ const GraphsSection = ({ range }: GraphsSectionProps) => {
 
       ctx.beginPath();
       ctx.rect(
-        margin,
-        margin,
+        -canvas.width / 2 + margin,
+        -canvas.height / 2 + margin,
         canvas.width - margin * 2,
         canvas.height - margin * 2
       );
@@ -96,7 +99,12 @@ const GraphsSection = ({ range }: GraphsSectionProps) => {
 
     // 執行所有繪製
     const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(
+        -canvas.width / 2,
+        -canvas.height / 2,
+        canvas.width,
+        canvas.height
+      );
       drawGrid();
       drawDashedBox();
     };
