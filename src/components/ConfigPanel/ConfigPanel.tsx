@@ -37,7 +37,7 @@ export default function ConfigPanel({
   setAxesSpacing,
 }: ConfigPanelProps) {
   return (
-    <div className="h-screen shadow-lg w-72">
+    <div className="h-screen shadow-lg min-w-[300px] overflow-y-scroll">
       <p className="bg-gray-100 p-3 text-center ">點座標生成設置</p>
       <div className="p-5 flex flex-col gap-4">
         <div>

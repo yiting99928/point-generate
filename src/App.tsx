@@ -34,14 +34,7 @@ function App() {
         axesSpacing={axesSpacing}
         setAxesSpacing={setAxesSpacing}
       />
-      <GraphsSection
-        range={range}
-        pointSpace={pointSpace}
-        pattern={pattern}
-        pointCount={pointCount}
-        axesSpacing={axesSpacing}
-        spiralTurns={spiralTurns}
-      />
+      <GraphsSection range={range} />
     </div>
   );
 }

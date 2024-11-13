@@ -16,68 +16,81 @@ const GraphsSection = ({ range }: GraphsSectionProps) => {
 
     // 設置坐標系的縮放和偏移
     const scale = 10;
-    const margin = 50; // 留給標籤的邊距
-    const offsetX = margin + range.width / 2;
-    const offsetY = margin + range.height / 2;
+    const margin = 50;
+    const baseLength = window.innerHeight - 200;
 
     // 設置 canvas 大小
-    canvas.width = range.width + 2 * margin;
-    canvas.height = range.height + 2 * margin;
+    let canvasWidth, canvasHeight;
+    if (range.width > range.height) {
+      canvasWidth = baseLength + margin * 2;
+      canvasHeight = (range.height * baseLength) / range.width + margin * 2;
+    } else {
+      canvasWidth = (range.width * baseLength) / range.height + margin * 2;
+      canvasHeight = baseLength + margin * 2;
+    }
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
 
-    // 繪製網格線
+    // 簡化的繪製網格線函數
     const drawGrid = () => {
-      ctx.strokeStyle = "#e0e0e0";
+      ctx.strokeStyle = "red";
       ctx.lineWidth = 0.5;
 
-      // 繪製垂直線
-      for (let x = -30; x <= 30; x += 10) {
-        const xPos = x * scale + offsetX;
-        ctx.beginPath();
-        ctx.moveTo(xPos, 0);
-        ctx.lineTo(xPos, canvas.height);
-        ctx.stroke();
-      }
-
-      // 繪製水平線
-      for (let y = -30; y <= 30; y += 10) {
-        const yPos = y * scale + offsetY;
-        ctx.beginPath();
-        ctx.moveTo(0, yPos);
-        ctx.lineTo(canvas.width, yPos);
-        ctx.stroke();
-      }
-    };
-
-    // 繪製座標軸
-    const drawAxes = () => {
-      ctx.strokeStyle = "#000";
-      ctx.lineWidth = 1;
-
-      // X軸
+      // 垂直中心線
       ctx.beginPath();
-      ctx.moveTo(margin, offsetY);
-      ctx.lineTo(canvas.width - margin, offsetY);
+      ctx.moveTo(canvas.width / 2, 0);
+      ctx.lineTo(canvas.width / 2, canvas.height);
       ctx.stroke();
 
-      // Y軸
+      // 水平中心線
       ctx.beginPath();
-      ctx.moveTo(offsetX, margin);
-      ctx.lineTo(offsetX, canvas.height - margin);
+      ctx.moveTo(0, canvas.height / 2);
+      ctx.lineTo(canvas.width, canvas.height / 2);
       ctx.stroke();
+
+      // 繪製垂直線和水平線
+      const maxSegments = 10;
+      const segmentSize = 10 * scale;
+
+      for (let i = 1; i <= maxSegments; i++) {
+        // 垂直線
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2 + i * segmentSize, 0);
+        ctx.lineTo(canvas.width / 2 + i * segmentSize, canvas.height);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2 - i * segmentSize, 0);
+        ctx.lineTo(canvas.width / 2 - i * segmentSize, canvas.height);
+        ctx.stroke();
+
+        // 水平線
+        ctx.beginPath();
+        ctx.moveTo(0, canvas.height / 2 + i * segmentSize);
+        ctx.lineTo(canvas.width, canvas.height / 2 + i * segmentSize);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(0, canvas.height / 2 - i * segmentSize);
+        ctx.lineTo(canvas.width, canvas.height / 2 - i * segmentSize);
+        ctx.stroke();
+      }
     };
 
     // 繪製虛線方框
     const drawDashedBox = () => {
-      ctx.strokeStyle = "#666";
+      ctx.strokeStyle = "#999";
       ctx.lineWidth = 1;
       ctx.setLineDash([5, 5]);
 
-      const boxWidth = range.width;
-      const boxHeight = range.height;
       ctx.beginPath();
-      ctx.rect(margin, margin, boxWidth, boxHeight);
+      ctx.rect(
+        margin,
+        margin,
+        canvas.width - margin * 2,
+        canvas.height - margin * 2
+      );
       ctx.stroke();
-
       ctx.setLineDash([]);
     };
 
@@ -85,7 +98,6 @@ const GraphsSection = ({ range }: GraphsSectionProps) => {
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       drawGrid();
-      drawAxes();
       drawDashedBox();
     };
 
@@ -102,7 +114,7 @@ const GraphsSection = ({ range }: GraphsSectionProps) => {
 
   return (
     <div className="mx-auto my-auto">
-      <canvas ref={canvasRef} className="border border-gray-300" />
+      <canvas ref={canvasRef} className="border border-gray-300 m-4" />
     </div>
   );
 };
