@@ -17,7 +17,7 @@ const GraphsSection = ({ range }: GraphsSectionProps) => {
     // 設置坐標系的縮放和偏移
     const scale = 10;
     const margin = 50;
-    const baseLength = window.innerHeight - 200;
+    const baseLength = window.innerHeight - 400;
 
     // 設置 canvas 大小
     let canvasWidth, canvasHeight;
@@ -39,45 +39,68 @@ const GraphsSection = ({ range }: GraphsSectionProps) => {
       ctx.strokeStyle = "red";
       ctx.lineWidth = 0.5;
 
-      // 垂直中心線
+      const xValues = [];
+      const yValues = [];
+
+      // 繪製垂直中心線
       ctx.beginPath();
       ctx.moveTo(0, -canvas.height / 2);
       ctx.lineTo(0, canvas.height / 2);
       ctx.stroke();
 
-      // 水平中心線
+      // 繪製水平中心線
       ctx.beginPath();
       ctx.moveTo(-canvas.width / 2, 0);
       ctx.lineTo(canvas.width / 2, 0);
       ctx.stroke();
 
-      // 繪製垂直線和水平線
-      const maxSegments = 10;
-      const segmentSize = 10 * scale;
+      // 繪製垂直線
+      for (let i = 10; i <= Math.floor(range.width / 2); i += 10) {
+        const xValue = i;
 
-      for (let i = 1; i <= maxSegments; i++) {
-        // 垂直線
+        // 右側垂直線
         ctx.beginPath();
-        ctx.moveTo(i * segmentSize, -canvas.height / 2);
-        ctx.lineTo(i * segmentSize, canvas.height / 2);
+        ctx.moveTo(xValue * scale, -canvas.height / 2);
+        ctx.lineTo(xValue * scale, canvas.height / 2);
         ctx.stroke();
 
+        // 左側垂直線
         ctx.beginPath();
-        ctx.moveTo(-i * segmentSize, -canvas.height / 2);
-        ctx.lineTo(-i * segmentSize, canvas.height / 2);
+        ctx.moveTo(-xValue * scale, -canvas.height / 2);
+        ctx.lineTo(-xValue * scale, canvas.height / 2);
         ctx.stroke();
 
-        // 水平線
-        ctx.beginPath();
-        ctx.moveTo(-canvas.width / 2, i * segmentSize);
-        ctx.lineTo(canvas.width / 2, i * segmentSize);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(-canvas.width / 2, -i * segmentSize);
-        ctx.lineTo(canvas.width / 2, -i * segmentSize);
-        ctx.stroke();
+        xValues.push(xValue, -xValue);
       }
+
+      // 繪製水平線
+      for (let i = 10; i <= Math.floor(range.height / 2); i += 10) {
+        const yValue = i;
+
+        // 上側水平線
+        ctx.beginPath();
+        ctx.moveTo(-canvas.width / 2, yValue * scale);
+        ctx.lineTo(canvas.width / 2, yValue * scale);
+        ctx.stroke();
+
+        // 下側水平線
+        ctx.beginPath();
+        ctx.moveTo(-canvas.width / 2, -yValue * scale);
+        ctx.lineTo(canvas.width / 2, -yValue * scale);
+        ctx.stroke();
+
+        yValues.push(yValue, -yValue);
+      }
+
+      // 排序並輸出 x 和 y 軸的數值
+      console.log(
+        "X-Axis Values:",
+        xValues.sort((a, b) => a - b)
+      );
+      console.log(
+        "Y-Axis Values:",
+        yValues.sort((a, b) => a - b)
+      );
     };
 
     // 繪製虛線方框
